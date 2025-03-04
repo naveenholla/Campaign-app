@@ -1,14 +1,17 @@
 import { SignatureV4 } from "@aws-sdk/signature-v4"
 import { Sha256 } from "@aws-crypto/sha256-js"
-import { defaultProvider } from "@aws-sdk/credential-provider-node"
+import { awsConfig } from "./server-config"
 
 // Helper function to sign AWS requests
 export async function signBedrockRequest(url: string, body: any, region: string) {
   const endpoint = new URL(url)
 
   const signer = new SignatureV4({
-    credentials: defaultProvider(),
-    region: region,
+    credentials: {
+      accessKeyId: awsConfig.accessKeyId,
+      secretAccessKey: awsConfig.secretAccessKey,
+    },
+    region: awsConfig.region,
     service: "bedrock",
     sha256: Sha256,
   })
@@ -21,7 +24,7 @@ export async function signBedrockRequest(url: string, body: any, region: string)
     },
     hostname: endpoint.host,
     path: endpoint.pathname,
-    protocol: endpoint.protocol.replace(':', ''), // Add this line
+    protocol: endpoint.protocol.replace(':', ''),
     body: JSON.stringify(body),
   });
 

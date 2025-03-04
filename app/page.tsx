@@ -141,6 +141,13 @@ export default function MarketingGenerator() {
     setImagePrompt("")
   }
 
+  const handleDeleteConversation = (conversationToDelete: ConversationType) => {
+    setConversations((prev) => prev.filter((conv) => conv.id !== conversationToDelete.id))
+    if (currentConversation?.id === conversationToDelete.id) {
+      setCurrentConversation(null)
+    }
+  }
+
   const handleCopyText = (text: string) => {
     navigator.clipboard.writeText(text)
   }
@@ -166,6 +173,7 @@ export default function MarketingGenerator() {
         currentConversation={currentConversation}
         onSelectConversation={setCurrentConversation}
         onNewChat={handleNewChat}
+        onDeleteConversation={handleDeleteConversation}
       />
       <div className="flex flex-col flex-1 h-screen max-w-4xl mx-auto p-4">
         <header className="py-4 border-b flex justify-between items-center">

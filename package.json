@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_ACCOUNT_ID && next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_ACCOUNT_ID && next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "latest",
     "@aws-crypto/sha256-js": "latest",
     "@aws-sdk/credential-provider-node": "latest",
+    "@aws-sdk/credential-providers": "^3.758.0",
     "@aws-sdk/signature-v4": "latest",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.2",
@@ -47,6 +48,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
+    "dotenv": "^16.4.7",
     "embla-carousel-react": "8.5.1",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",

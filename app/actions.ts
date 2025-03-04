@@ -3,7 +3,9 @@
 import { generateText } from "ai"
 import { bedrock } from "@ai-sdk/amazon-bedrock"
 import { signBedrockRequest } from "@/lib/aws-bedrock"
+import { awsConfig } from "@/lib/aws-config"
 
+// Initialize bedrock model
 const bedrockTextModel = bedrock("anthropic.claude-3-5-sonnet-20240620-v1:0")
 
 export async function generateEmailContent(prompt: string): Promise<string> {
@@ -46,7 +48,7 @@ export async function generateMarketingImage(prompt: string): Promise<string> {
     const signedRequest = await signBedrockRequest(
       "https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.titan-image-generator-v2:0/invoke",
       body,
-      process.env.AWS_REGION!,
+      awsConfig.region
     )
 
     const url = `https://${signedRequest.hostname}${signedRequest.path}`
@@ -59,12 +61,9 @@ export async function generateMarketingImage(prompt: string): Promise<string> {
       },
       body: signedRequest.body,
     })
-
-    console.log('Bedrock Image API Response Status:', response.status);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Bedrock Image API Error Response:', errorText);
       throw new Error(`Bedrock API error: ${response.status} ${errorText}`);
     }
     
