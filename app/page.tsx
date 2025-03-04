@@ -12,6 +12,8 @@ import { Sidebar } from "@/components/sidebar"
 import { Settings } from "@/components/settings"
 import { generateEmailContent, generateMarketingImage } from "@/app/actions"
 import { useTheme } from "next-themes"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 type MessageType = {
   role: "user" | "assistant"
@@ -232,7 +234,9 @@ export default function MarketingGenerator() {
                       </div>
                     </div>
                   )}
-                  <div className="whitespace-pre-wrap">{message.content}</div>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                  </div>
                   {message.role === "assistant" && (
                     <div className="flex mt-2 space-x-2">
                       <Button variant="outline" size="sm" onClick={() => setIsEditingText(true)}>
