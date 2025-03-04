@@ -2,13 +2,45 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useTheme } from "next-themes"
+import bedrockModels from "@/bedrock-models.json"
 
 type SettingsProps = {
   isOpen: boolean
   onClose: () => void
+  textModel: string
+  imageModel: string
+  onTextModelChange: (model: string) => void
+  onImageModelChange: (model: string) => void
 }
 
-export function Settings({ isOpen, onClose }: SettingsProps) {
+// Filter text models (Amazon provider, text input/output)
+const textModels = bedrockModels.modelSummaries.filter(
+  model => 
+    model.providerName === "Amazon" && 
+    model.inputModalities.includes("TEXT") && 
+    model.outputModalities.includes("TEXT") &&
+    model.modelLifecycle.status === "ACTIVE" &&
+    model.inferenceTypesSupported.includes("ON_DEMAND")
+)
+
+// Filter image models (Amazon provider, text input, image output)
+const imageModels = bedrockModels.modelSummaries.filter(
+  model => 
+    model.providerName === "Amazon" && 
+    model.inputModalities.includes("TEXT") && 
+    model.outputModalities.includes("IMAGE") &&
+    model.modelLifecycle.status === "ACTIVE" &&
+    model.inferenceTypesSupported.includes("ON_DEMAND")
+)
+
+export function Settings({ 
+  isOpen, 
+  onClose, 
+  textModel,
+  imageModel,
+  onTextModelChange,
+  onImageModelChange
+}: SettingsProps) {
   const { theme, setTheme } = useTheme()
 
   return (
@@ -20,25 +52,31 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
         <div className="space-y-4">
           <div>
             <Label htmlFor="textModel">Text Generation Model</Label>
-            <Select>
+            <Select value={textModel} onValueChange={onTextModelChange}>
               <SelectTrigger id="textModel">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="claude-3-sonnet">Claude 3 Sonnet</SelectItem>
-                <SelectItem value="claude-3-opus">Claude 3 Opus</SelectItem>
+                {textModels.map((model) => (
+                  <SelectItem key={model.modelId} value={model.modelId}>
+                    {model.modelName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label htmlFor="imageModel">Image Generation Model</Label>
-            <Select>
+            <Select value={imageModel} onValueChange={onImageModelChange}>
               <SelectTrigger id="imageModel">
                 <SelectValue placeholder="Select a model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="stable-diffusion-xl">Stable Diffusion XL</SelectItem>
-                <SelectItem value="dall-e-3">DALL-E 3</SelectItem>
+                {imageModels.map((model) => (
+                  <SelectItem key={model.modelId} value={model.modelId}>
+                    {model.modelName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

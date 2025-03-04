@@ -35,12 +35,23 @@ export default function MarketingGenerator() {
   const [isEditingText, setIsEditingText] = useState(false)
   const [isEditingImage, setIsEditingImage] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [textModel, setTextModel] = useState("amazon.titan-text-lite-v1")
+  const [imageModel, setImageModel] = useState("amazon.titan-image-generator-v1")
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
     const savedConversations = localStorage.getItem("conversations")
+    const savedTextModel = localStorage.getItem("textModel")
+    const savedImageModel = localStorage.getItem("imageModel")
+    
     if (savedConversations) {
       setConversations(JSON.parse(savedConversations))
+    }
+    if (savedTextModel) {
+      setTextModel(savedTextModel)
+    }
+    if (savedImageModel) {
+      setImageModel(savedImageModel)
     }
   }, [])
 
@@ -49,6 +60,14 @@ export default function MarketingGenerator() {
       localStorage.setItem("conversations", JSON.stringify(conversations))
     }
   }, [conversations])
+
+  useEffect(() => {
+    localStorage.setItem("textModel", textModel)
+  }, [textModel])
+
+  useEffect(() => {
+    localStorage.setItem("imageModel", imageModel)
+  }, [imageModel])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -79,7 +98,10 @@ export default function MarketingGenerator() {
     setInput("")
 
     try {
-      const [emailContent, imageUrl] = await Promise.all([generateEmailContent(input), generateMarketingImage(input)])
+      const [emailContent, imageUrl] = await Promise.all([
+        generateEmailContent(input, textModel),
+        generateMarketingImage(input, imageModel)
+      ])
 
       const assistantMessage: MessageType = {
         role: "assistant",
@@ -109,7 +131,7 @@ export default function MarketingGenerator() {
     setIsLoading(true)
     try {
       if (type === "text") {
-        const emailContent = await generateEmailContent(textPrompt)
+        const emailContent = await generateEmailContent(textPrompt, textModel)
         const updatedMessages = [...currentConversation.messages]
         updatedMessages[updatedMessages.length - 1] = {
           ...updatedMessages[updatedMessages.length - 1],
@@ -118,7 +140,7 @@ export default function MarketingGenerator() {
         setCurrentConversation({ ...currentConversation, messages: updatedMessages })
         setIsEditingText(false)
       } else {
-        const imageUrl = await generateMarketingImage(imagePrompt)
+        const imageUrl = await generateMarketingImage(imagePrompt, imageModel)
         const updatedMessages = [...currentConversation.messages]
         updatedMessages[updatedMessages.length - 1] = {
           ...updatedMessages[updatedMessages.length - 1],
@@ -291,7 +313,14 @@ export default function MarketingGenerator() {
           </DialogContent>
         </Dialog>
 
-        <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <Settings 
+          isOpen={isSettingsOpen} 
+          onClose={() => setIsSettingsOpen(false)}
+          textModel={textModel}
+          imageModel={imageModel}
+          onTextModelChange={setTextModel}
+          onImageModelChange={setImageModel}
+        />
       </div>
     </div>
   )

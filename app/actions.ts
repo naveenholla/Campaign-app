@@ -5,10 +5,10 @@ import { bedrock } from "@ai-sdk/amazon-bedrock"
 import { signBedrockRequest } from "@/lib/aws-bedrock"
 import { awsConfig } from "@/lib/aws-config"
 
-// Initialize bedrock model
-const bedrockTextModel = bedrock("anthropic.claude-3-5-sonnet-20240620-v1:0")
+export async function generateEmailContent(prompt: string, modelId: string = "amazon.titan-text-lite-v1"): Promise<string> {
+  const bedrockTextModel = bedrock(modelId)
+  console.log(`Using text model: ${modelId}`)
 
-export async function generateEmailContent(prompt: string): Promise<string> {
   const { text } = await generateText({
     model: bedrockTextModel,
     system: `You are an expert marketing copywriter specializing in email campaigns. 
@@ -26,7 +26,7 @@ export async function generateEmailContent(prompt: string): Promise<string> {
   return text
 }
 
-export async function generateMarketingImage(prompt: string): Promise<string> {
+export async function generateMarketingImage(prompt: string, modelId: string = "amazon.titan-image-generator-v1"): Promise<string> {
   try {
     const body = {
       taskType: 'TEXT_IMAGE',
@@ -46,7 +46,7 @@ export async function generateMarketingImage(prompt: string): Promise<string> {
     }
 
     const signedRequest = await signBedrockRequest(
-      "https://bedrock-runtime.us-east-1.amazonaws.com/model/amazon.titan-image-generator-v2:0/invoke",
+      `https://bedrock-runtime.us-east-1.amazonaws.com/model/${modelId}/invoke`,
       body,
       awsConfig.region
     )
