@@ -41,6 +41,14 @@ aws bedrock list-foundation-models --region us-east-1 | jq '.' > bedrock-models.
 
 This will help you verify which models are available in your account and region.
 
+```
+npm install -g npm-check-updates
+ncu
+ncu -u
+npm install
+
+```
+
 ## License
 
 [Your chosen license]
