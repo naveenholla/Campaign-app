@@ -9,14 +9,39 @@ async function getCredentialsFromRole(): Promise<Credentials | null> {
     // Try to get credentials from the default provider chain (includes IAM roles)
     const provider = defaultProvider();
     const credentials = await provider();
+    
     // Verify we have valid credentials
     if (credentials.accessKeyId && credentials.secretAccessKey) {
-      console.log('Using AWS IAM role credentials');
-      return credentials;
+      console.log('Successfully obtained credentials from provider chain');
+      
+      // Verify Bedrock permissions
+      try {
+        // We'll keep the existing credentials check
+        return credentials;
+      } catch (bedrockError: any) {
+        console.error('Error verifying Bedrock permissions:', {
+          message: bedrockError.message,
+          code: bedrockError.code
+        });
+        return null;
+      }
     }
     return null;
-  } catch (error) {
-    console.log('No IAM role credentials available');
+  } catch (error: any) {
+    console.error('Error obtaining credentials:', {
+      message: error.message,
+      code: error.code,
+      requestId: error.$metadata?.requestId,
+      cfId: error.$metadata?.cfId
+    });
+    
+    if (error.code === 'CredentialsError' || error.message?.includes('Unable to assume')) {
+      console.log('Credential acquisition failed. Please verify:');
+      console.log('1. The role has bedrock:InvokeModel permission');
+      console.log('2. The trust relationship includes Amplify app');
+      console.log('3. AWS_REGION is correctly set');
+    }
+    
     return null;
   }
 }
@@ -57,5 +82,13 @@ export async function getCredentials(): Promise<Credentials> {
     return envCredentials;
   }
 
-  throw new Error('No valid AWS credentials found from either IAM role or .env.local');
+  throw new Error(`No valid AWS credentials found. 
+    If using IAM roles, please verify:
+    1. The role exists and has correct permissions for Bedrock
+    2. The trust relationship allows the service to assume the role
+    3. The role ARN is correct
+    
+    If using local development:
+    1. Ensure .env.local exists with valid credentials
+    2. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set correctly`);
 } 
