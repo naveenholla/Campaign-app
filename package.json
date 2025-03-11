@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_ACCOUNT_ID && next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION AWS_ACCOUNT_ID && next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "latest",
     "@aws-crypto/sha256-js": "latest",
-    "@aws-sdk/credential-provider-node": "latest",
+    "@aws-sdk/credential-provider-node": "^3.758.0",
     "@aws-sdk/credential-providers": "^3.758.0",
     "@aws-sdk/signature-v4": "latest",
     "@hookform/resolvers": "^3.9.1",
