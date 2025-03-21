@@ -1,0 +1,83 @@
+[
+{
+  "modelId": "amazon.nova-canvas-v1:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": "{\"textToImageParams\":{\"text\":\"this is where you place your input text\"},\"taskType\":\"TEXT_IMAGE\",\"imageGenerationConfig\":{\"cfgScale\":8,\"seed\":42,\"quality\":\"standard\",\"width\":1280,\"height\":720,\"numberOfImages\":3}}"
+},
+{
+  "modelId": "amazon.nova-lite-v1:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": {
+    "inferenceConfig": {
+      "max_new_tokens": 1000
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "text": "this is where you place your input text"
+          }
+        ]
+      }
+    ]
+  }
+},
+{
+  "modelId": "amazon.nova-micro-v1:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": {
+    "inferenceConfig": {
+      "max_new_tokens": 1000
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "text": "this is where you place your input text"
+          }
+        ]
+      }
+    ]
+  }
+},
+{
+  "modelId": "amazon.nova-pro-v1:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": {
+    "inferenceConfig": {
+      "max_new_tokens": 1000
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "text": "this is where you place your input text"
+          }
+        ]
+      }
+    ]
+  }
+},
+{
+  "modelId": "amazon.titan-image-generator-v2:0",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": "{\"textToImageParams\":{\"text\":\"this is where you place your input text\"},\"taskType\":\"TEXT_IMAGE\",\"imageGenerationConfig\":{\"cfgScale\":8,\"seed\":42,\"quality\":\"standard\",\"width\":1024,\"height\":1024,\"numberOfImages\":3}}"
+ },
+ 
+ {
+  "modelId": "amazon.titan-image-generator-v1",
+  "contentType": "application/json",
+  "accept": "application/json",
+  "body": "{\"textToImageParams\":{\"text\":\"this is where you place your input text\"},\"taskType\":\"TEXT_IMAGE\",\"imageGenerationConfig\":{\"cfgScale\":8,\"seed\":42,\"quality\":\"standard\",\"width\":1024,\"height\":1024,\"numberOfImages\":3}}"
+ } 
+
+]
+
